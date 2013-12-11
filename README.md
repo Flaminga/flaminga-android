@@ -1,4 +1,4 @@
-Flamingo-Android
+Flaminga-Android
 ================
 
-Flamingo Android Client
+Flaminga Android Client
