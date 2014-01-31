@@ -23,4 +23,5 @@ android {
 }
 
 dependencies {
+    compile 'org.twitter4j:twitter4j-core:2.1.4'
 }

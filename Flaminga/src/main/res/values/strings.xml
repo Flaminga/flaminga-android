@@ -4,4 +4,10 @@
     <string name="app_name">Flaminga</string>
     <string name="action_settings">Settings</string>
 
+    <!-- Authentication -->
+    <string name="oauth_callback">x-oauth-flaminga://callback</string>
+
+    <!-- Error messages -->
+    <string name="twitter_error">There was a problem reaching Twitter. Please try again later.</string>
+
 </resources>
