@@ -19,17 +19,18 @@ import com.flaminga.client.R;
  * This Activity will display a webview, loading Twitter's authentication page. This is not the page
  * within Flaminga from which the user initializes the intent to authenticate.
  */
-public class TwitterAuthenticationWebViewActivity extends Activity {
+public class TwitterAuthenticationActivity extends Activity {
 
     public static final String URL = "url";
 
-    private static final String TAG = "TwitterAuthenticationWebViewActivity";
+    private static final String TAG = "TwitterAuthenticationActivity";
     public static final String VERIFIER = "verifier";
 
     private String mUrl = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
         // set the main layout
         setContentView(R.layout.activity_web_view);

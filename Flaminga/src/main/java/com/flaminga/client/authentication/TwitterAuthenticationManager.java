@@ -1,7 +1,6 @@
 package com.flaminga.client.authentication;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -10,7 +9,7 @@ import android.util.Log;
 import com.flaminga.client.Flaminga;
 import com.flaminga.client.KeyConstant;
 import com.flaminga.client.R;
-import com.flaminga.client.activity.TwitterAuthenticationWebViewActivity;
+import com.flaminga.client.activity.TwitterAuthenticationActivity;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -18,8 +17,8 @@ import java.util.HashMap;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
-import twitter4j.http.AccessToken;
-import twitter4j.http.RequestToken;
+import twitter4j.auth.AccessToken;
+import twitter4j.auth.RequestToken;
 
 
 /**
@@ -31,7 +30,7 @@ public class TwitterAuthenticationManager {
     public static final int TWITTER_REQUEST = 5; // Ensure this is unique. TODO: Place in res
 
     private static final String REQUEST_TOKEN = "request_token";
-    private static final String FRAGMENT = "fragment";
+    private static final String ACTIVITY = "activity";
 
     private static Twitter sTwitter;
     private static RequestToken sRequestToken;
@@ -43,17 +42,21 @@ public class TwitterAuthenticationManager {
         sListener = new WeakReference<TwitterAuthenticationListener>(listener);
     }
 
-    public static void getRequestToken(Fragment fragment) {
+    /**
+     *
+     * @param activity // The activity that launched the getRequestToken call. If done by a fragment, have that call getActivity()
+     */
+    public static void getRequestToken(Activity activity) {
 
-        new AsyncTask<Fragment, Void, HashMap<String, Object>>() {
+        new AsyncTask<Activity, Void, HashMap<String, Object>>() {
 
             @Override
-            protected HashMap<String, Object> doInBackground(Fragment... params) {
+            protected HashMap<String, Object> doInBackground(Activity... params) {
                 HashMap<String, Object> map = new HashMap<String, Object>();
-                map.put(FRAGMENT, params[0]);
+                map.put(ACTIVITY, params[0]);
 
                 sTwitter = new TwitterFactory().getInstance();
-                sTwitter.setOAuthConsumer(KeyConstant.TWITTER_CONSUMER_KEY, KeyConstant.TWITTER_CONSUMER_KEY);
+                sTwitter.setOAuthConsumer(KeyConstant.TWITTER_CONSUMER_KEY, KeyConstant.TWITTER_CONSUMER_SECRET);
 
                 // Construct callback url.
                 String oauthCallbackUrl = Flaminga.getFlamingaString(R.string.oauth_callback);
@@ -77,7 +80,7 @@ public class TwitterAuthenticationManager {
                     }
                     return;
                 }
-                Fragment fragment = (Fragment) result.get(FRAGMENT);
+                Activity activity = (Activity) result.get(ACTIVITY);
                 RequestToken requestToken = (RequestToken) result.get(REQUEST_TOKEN);
 
                 if (requestToken == null) {
@@ -90,16 +93,16 @@ public class TwitterAuthenticationManager {
                 // Save requestToken
                 sRequestToken = requestToken;
 
-                // Get OAuthWebViewActivity allow user to sign
-                if (fragment == null) return;
-                Activity activity = fragment.getActivity();
+                // Now that we have the request token, launch the OAuth webview to allow signin.
+                if (activity == null) return;
                 if (activity != null && !activity.isFinishing()) {
-                    Intent intent = new Intent(activity.getApplicationContext(), TwitterAuthenticationWebViewActivity.class);
+                    Intent intent = new Intent(activity.getApplicationContext(), TwitterAuthenticationActivity.class);
                     String authorizationUrl = Uri.parse(requestToken.getAuthorizationURL()).toString();
-                    fragment.startActivityForResult(intent, TWITTER_REQUEST);
+                    intent.putExtra(TwitterAuthenticationActivity.URL, authorizationUrl);
+                    activity.startActivityForResult(intent, TWITTER_REQUEST);
                 }
             }
-        }.execute(fragment);
+        }.execute(activity);
     }
 
 
