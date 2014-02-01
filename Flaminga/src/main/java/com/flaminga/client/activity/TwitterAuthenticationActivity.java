@@ -1,13 +1,13 @@
 package com.flaminga.client.activity;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.flaminga.client.R;
+import com.flaminga.client.authentication.TwitterAuthenticationManager;
 
 /**
  * Created by mjanes on 1/30/14.
@@ -34,7 +34,6 @@ public class TwitterAuthenticationActivity extends Activity {
 
         // set the main layout
         setContentView(R.layout.activity_web_view);
-
 
         Bundle incomingBundle = getIntent().getExtras();
 
@@ -67,23 +66,24 @@ public class TwitterAuthenticationActivity extends Activity {
                     Uri uri = Uri.parse(url);
                     String verifier = uri.getQueryParameter("oauth_verifier");
 
-                    Intent returnIntent = new Intent();
+                    //Intent returnIntent = new Intent();
                     if (verifier != null && verifier.length() > 0) {
-                        returnIntent.putExtra(VERIFIER, url);
-                        setResult(RESULT_OK, returnIntent);
-                        returnIntent.putExtra(VERIFIER, verifier);
+                        //returnIntent.putExtra(VERIFIER, url);
+                        //setResult(RESULT_OK, returnIntent);
+                        //returnIntent.putExtra(VERIFIER, verifier);
+                        TwitterAuthenticationManager.verifyRequestToken(verifier, TwitterAuthenticationActivity.this);
+                        return true;
                     } else {
-                        setResult(RESULT_CANCELED);
+                        finish();
+                        return true;
                     }
-                    finish();
-                    return true;
-                } // May need another if, I forget what Twitter does, but incase it redirects to different callback
+
+                } // May need another if, I forget what Twitter does, but in case it redirects to different callback
 
                 return false;
             }
         });
 
         webView.loadUrl(mUrl);
-
     }
 }

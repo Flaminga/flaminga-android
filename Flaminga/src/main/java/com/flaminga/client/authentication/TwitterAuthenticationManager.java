@@ -44,9 +44,9 @@ public class TwitterAuthenticationManager {
 
     /**
      *
-     * @param activity // The activity that launched the getRequestToken call. If done by a fragment, have that call getActivity()
+     * @param activity // The activity that launched the launchRequest call. If done by a fragment, have that call getActivity()
      */
-    public static void getRequestToken(Activity activity) {
+    public static void launchRequest(Activity activity) {
 
         new AsyncTask<Activity, Void, HashMap<String, Object>>() {
 
@@ -106,7 +106,13 @@ public class TwitterAuthenticationManager {
     }
 
 
-    public static void verifyRequestToken(final String verifier) {
+
+    /**
+     *
+     * @param verifier
+     * @param activity // This feels hacky as hell, but throwing it in here for now.
+     */
+    public static void verifyRequestToken(final String verifier, final TwitterAuthenticationActivity activity) {
         if (verifier == null || sTwitter == null || sRequestToken == null) {
             TwitterAuthenticationListener listener = sListener == null ? null : sListener.get();
             if (listener != null) {
@@ -127,7 +133,7 @@ public class TwitterAuthenticationManager {
 
                 try {
                     AccessToken accessToken = sTwitter.getOAuthAccessToken(sRequestToken, params[0]);
-                    String accessTokenString = null;
+                    String accessTokenString;
                     if ((accessToken != null) && (accessTokenString = accessToken.getToken()) != null && (accessTokenString.length() > 0)) {
                         // Set Twitter tokens
                         result.put(ACCESS_TOKEN, accessTokenString);
@@ -144,7 +150,7 @@ public class TwitterAuthenticationManager {
 
             @Override
             protected void onPostExecute(HashMap<String, Object> result) {
-                TwitterAuthenticationListener listener = sListener == null ? null : sListener.get();
+                TwitterAuthenticationListener listener = (sListener == null) ? null : sListener.get();
                 if (result == null) {
                     if (listener != null) {
                         listener.onTwitterAuthentication(Flaminga.getFlamingaString(R.string.twitter_error), null, null);
@@ -158,6 +164,7 @@ public class TwitterAuthenticationManager {
 
                 if (listener != null) {
                     listener.onTwitterAuthentication(notification, accessToken, tokenSecret);
+                    activity.finish();
                 }
             }
         }.execute(verifier);

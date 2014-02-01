@@ -16,7 +16,7 @@ public class Flaminga extends Application {
 
     // Question: How are we going to store this permanently? Shared preferences?
     // Make Accounts serializable then?
-    private ArrayList<Account> mAccounts;
+    private ArrayList<Account> mAccounts = new ArrayList<Account>();
 
 
     /***********************************************************************************************
@@ -34,7 +34,12 @@ public class Flaminga extends Application {
      * Account handling
      **********************************************************************************************/
 
+    public void addAccount(Account account) {
+        mAccounts.add(account);
+    }
+
     public ArrayList<Account> getAccounts() {
+
         return mAccounts;
     }
 

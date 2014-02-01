@@ -1,21 +1,13 @@
 package com.flaminga.client.activity;
 
 import android.app.Activity;
-import android.app.ActionBar;
-import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.os.Build;
 
 import com.flaminga.client.Flaminga;
-import com.flaminga.client.R;
 import com.flaminga.client.authentication.TwitterAuthenticationManager;
+import com.flaminga.client.model.Account;
 
 /**
  * The launcher activity for Flaminga. Will determine what should be the first activity shown to the
@@ -37,12 +29,7 @@ public class LaunchActivity extends Activity implements TwitterAuthenticationMan
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        launchNext();
+        TwitterAuthenticationManager.setOnTwitterAuthenticationListener(this);
     }
 
     @Override
@@ -51,12 +38,18 @@ public class LaunchActivity extends Activity implements TwitterAuthenticationMan
         launchNext();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        TwitterAuthenticationManager.setOnTwitterAuthenticationListener(null);
+    }
+
 
     /***********************************************************************************************
      * Utility
      **********************************************************************************************/
 
-    protected Flaminga getFlamingaApplication() {
+    protected Flaminga getApp() {
         return (Flaminga) getApplication();
     }
 
@@ -74,13 +67,18 @@ public class LaunchActivity extends Activity implements TwitterAuthenticationMan
         // Temporarily divert through the TwitterAuthenticationManager/Activity and then, once that
         // is done, bounce to the next activity. Hrm... should be a cleaner way of doing this, but
         // pasting together what we have.
-        TwitterAuthenticationManager.getRequestToken(LaunchActivity.this);
+        Flaminga flaminga = getApp();
+
+        // TODO, this is only checking for whether or not an account exists. Not, whether or not the
+        // account has a valid access token.
+        if (flaminga.getAccountCount() == 0) {
+            TwitterAuthenticationManager.launchRequest(LaunchActivity.this);
+        } else {
+            Intent intent = new Intent(this, HomeActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
-
-
-    /***********************************************************************************************
-     * Utilities/callbacks/etc.
-     **********************************************************************************************/
 
     /**
      * Called on return
@@ -91,10 +89,9 @@ public class LaunchActivity extends Activity implements TwitterAuthenticationMan
     @Override
     public void onTwitterAuthentication(String notification, String accessToken, String accessTokenSecret) {
         if (notification == null) {
-            // TODO: Store the access tokens in whatever format we're using for the accounts
-            Intent intent = new Intent(this, HomeActivity.class);
-            startActivity(intent);
-            finish();
+            Account newAccount = new Account(accessToken, accessTokenSecret);
+            getApp().addAccount(newAccount);
+            launchNext();
         } else {
             Log.e(TAG, "Error authenticating with Twitter: " + null);
         }
