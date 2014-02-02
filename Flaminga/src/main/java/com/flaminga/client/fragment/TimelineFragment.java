@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.flaminga.client.Flaminga;
 import com.flaminga.client.R;
+import com.flaminga.client.adapter.TweetArrayAdapter;
 import com.flaminga.client.model.Account;
 import com.flaminga.client.KeyConstant;
 import com.flaminga.client.utility.UiUtil;
@@ -73,69 +74,15 @@ public class TimelineFragment extends ListFragment {
 
     }
 
-    private static class TimelineListAdapter extends ArrayAdapter<twitter4j.Status> {
-
-        Context mContext;
-
-        public TimelineListAdapter(Context context, List<twitter4j.Status> statuses) {
-            super(context, 0, statuses);
-            mContext = context;
-        }
-
-        static class ViewHolder {
-            ImageView avatar;
-            TextView screenName;
-            TextView name;
-            TextView status;
-        }
-
-        public View getView(int position, View convertView, ViewGroup parent) {
-            // get the event corresponding to the list item at position
-            twitter4j.Status status = getItem(position);
-
-
-            // if the view to modify is null, then create a new one
-            ViewHolder holder;
-            if (convertView == null) {
-                convertView = LayoutInflater.from(getContext()).inflate(R.layout.status_list_item, null);
-
-                holder = new ViewHolder();
-                holder.avatar = (ImageView) convertView.findViewById(R.id.avatar);
-                holder.screenName = (TextView) convertView.findViewById(R.id.screen_name);
-                holder.name = (TextView) convertView.findViewById(R.id.name);
-                holder.status = (TextView) convertView.findViewById(R.id.status);
-
-                convertView.setTag(holder);
-            } else {
-                holder = (ViewHolder) convertView.getTag();
-            }
-
-            String imageUrl = status.getUser().getProfileImageURL();
-            if(!imageUrl.equals("")){
-                Picasso.Builder build;
-                build = new Picasso.Builder(mContext);
-                build.memoryCache(UiUtil.getPicassoCache());
-                //int avatarDimen = (int) mContext.getResources().getDimension(R.dimen.avatar_width_height_medium);
-                int avatarDimen = 64;
-                build.build().load(imageUrl).resize(avatarDimen, avatarDimen).centerCrop().into(holder.avatar);
-            }
-            holder.screenName.setText(status.getUser().getScreenName());
-            holder.name.setText(status.getUser().getName());
-            holder.status.setText(status.getText());
-
-            return convertView;
-        }
-    }
-
     /**
      * Function to get timeline
      * */
-    class getTimeLine extends AsyncTask<Void, Void, TimelineListAdapter> {
+    class getTimeLine extends AsyncTask<Void, Void, TweetArrayAdapter> {
 
         /**
          * getting Places JSON
          * */
-        protected TimelineListAdapter doInBackground(Void... args) {
+        protected TweetArrayAdapter doInBackground(Void... args) {
 
             try {
                 ConfigurationBuilder builder = new ConfigurationBuilder();
@@ -155,7 +102,7 @@ public class TimelineFragment extends ListFragment {
                 User user = twitter.verifyCredentials();
                 List<twitter4j.Status> statuses = twitter.getHomeTimeline();
 
-                return new TimelineListAdapter(getActivity().getApplicationContext(), statuses);
+                return new TweetArrayAdapter(getActivity().getApplicationContext(), statuses);
 
             } catch (TwitterException e) {
                 // Error in updating status
@@ -164,7 +111,7 @@ public class TimelineFragment extends ListFragment {
             return null;
         }
 
-        protected void onPostExecute(TimelineListAdapter adapter) {
+        protected void onPostExecute(TweetArrayAdapter adapter) {
             getListView().setAdapter(adapter);
         }
 
