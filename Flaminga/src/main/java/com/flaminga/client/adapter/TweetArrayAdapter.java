@@ -43,7 +43,7 @@ public class TweetArrayAdapter extends ArrayAdapter<Status> {
         // if the view to modify is null, then create a new one
         ViewHolder holder;
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.status_list_item, null);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.tweet_list_item, null);
 
             holder = new ViewHolder();
             holder.avatar = (ImageView) convertView.findViewById(R.id.avatar);
