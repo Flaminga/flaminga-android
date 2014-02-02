@@ -22,6 +22,7 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.flaminga.client.fragment.SettingsFragment;
 import com.flaminga.client.fragment.TimelineFragment;
 import com.flaminga.client.R;
 
@@ -133,6 +134,7 @@ public class NavDrawerActivity extends FragmentActivity {
     private void setupAdapter() {
         ArrayList<Integer> menuItems = new ArrayList<Integer>();
         menuItems.add(R.layout.menu_item_timeline);
+        menuItems.add(R.layout.menu_item_settings);
         mMenuListAdapter = new MenuListAdapter(this, menuItems);
     }
 
@@ -141,6 +143,8 @@ public class NavDrawerActivity extends FragmentActivity {
         public void onItemClick(AdapterView parent, View view, int position, long id){
             if (position == 0) {
                 loadTimelineFragment();
+            } else if (position == 1) {
+                loadSettingsFragment();
             }
         }
     }
@@ -210,6 +214,14 @@ public class NavDrawerActivity extends FragmentActivity {
         resetDrawer(0);
     }
 
+    public void loadSettingsFragment() {
+        FragmentManager fm = getSupportFragmentManager();
+        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
+        if (!(fragment instanceof SettingsFragment)) {
+            handleFragmentTransaction(fm, SettingsFragment.newInstance());
+        }
+        resetDrawer(1);
+    }
 
     /**
      * Takes care of fragment transactions, including updating the ActionBar's title

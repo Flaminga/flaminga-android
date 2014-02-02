@@ -2,11 +2,17 @@
 <resources>
 
     <string name="app_name">Flaminga</string>
+
+    <!-- Menu item strings -->
     <string name="action_settings">Settings</string>
 
+    <!-- Nav drawer strings -->
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
+    <string name="timeline">Timeline</string>
+    <string name="settings">Settings</string>
 
+    <!-- Timeline -->
     <string name="no_tweets_message">There are no Tweets</string>
 
     <!-- Authentication -->

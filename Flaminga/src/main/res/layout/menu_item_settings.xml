@@ -3,5 +3,5 @@
     android:id="@+id/menu_item_timeline"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:text="@string/timeline"
+    android:text="@string/settings"
     android:textSize="16dp"/>
