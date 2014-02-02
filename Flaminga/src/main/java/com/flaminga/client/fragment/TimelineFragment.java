@@ -85,6 +85,7 @@ public class TimelineFragment extends ListFragment {
         protected TweetArrayAdapter doInBackground(Void... args) {
 
             try {
+                // TODO: Stick most of this into TwitterManager
                 ConfigurationBuilder builder = new ConfigurationBuilder();
                 builder.setOAuthConsumerKey(KeyConstant.TWITTER_CONSUMER_KEY);
                 builder.setOAuthConsumerSecret(KeyConstant.TWITTER_CONSUMER_SECRET);
