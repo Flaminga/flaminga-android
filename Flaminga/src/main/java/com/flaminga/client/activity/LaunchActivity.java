@@ -67,14 +67,13 @@ public class LaunchActivity extends Activity implements TwitterAuthenticationMan
         // Temporarily divert through the TwitterAuthenticationManager/Activity and then, once that
         // is done, bounce to the next activity. Hrm... should be a cleaner way of doing this, but
         // pasting together what we have.
-        Flaminga flaminga = getApp();
 
         // TODO, this is only checking for whether or not an account exists. Not, whether or not the
         // account has a valid access token.
-        if (flaminga.getAccountCount() == 0) {
+        if (Flaminga.getAccountCount() == 0) {
             TwitterAuthenticationManager.launchRequest(LaunchActivity.this);
         } else {
-            Intent intent = new Intent(this, HomeActivity.class);
+            Intent intent = new Intent(this, NavDrawerActivity.class);
             startActivity(intent);
             finish();
         }
@@ -90,7 +89,7 @@ public class LaunchActivity extends Activity implements TwitterAuthenticationMan
     public void onTwitterAuthentication(String notification, String accessToken, String accessTokenSecret) {
         if (notification == null) {
             Account newAccount = new Account(accessToken, accessTokenSecret);
-            getApp().addAccount(newAccount);
+            Flaminga.addAccount(newAccount);
             launchNext();
         } else {
             Log.e(TAG, "Error authenticating with Twitter: " + null);

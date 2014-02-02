@@ -9,19 +9,21 @@ package com.flaminga.client.model;
  */
 public class Account {
 
-    private static final String KEY_ID = "id";
-    private static final String KEY_SCREEN_NAME = "screenName";
-    private static final String KEY_NAME = "name";
-    private static final String KEY_OAUTH_TOKEN = "oAuthToken";
-    private static final String KEY_OAUTH_SECRET = "oAuthSecret";
-
-    private String mOAuthToken;
-    private String mOAuthSecret;
+    private String mAccessToken;
+    private String mAccessSecret;
 
     public Account() {}
 
-    public Account(String oAuthToken, String oAuthSecret) {
-        mOAuthToken = oAuthToken;
-        mOAuthSecret = oAuthSecret;
+    public Account(String accessToken, String accessSecret) {
+        mAccessToken = accessToken;
+        mAccessSecret = accessSecret;
+    }
+
+    public String getAccessToken() {
+        return mAccessToken;
+    }
+
+    public String getAccessSecret() {
+        return mAccessSecret;
     }
 }

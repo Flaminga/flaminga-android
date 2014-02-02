@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/activity_container"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical" >
+
+    <!-- Dummy to take focus off of the search Locally box -->
+    <LinearLayout android:focusable="true"
+                  android:focusableInTouchMode="true"
+                  android:layout_width="0dp"
+                  android:layout_height="0dp">
+        <requestFocus/>
+    </LinearLayout>
+
+    <!-- list view with all the agendums -->
+    <ListView
+            android:id="@android:id/list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:cacheColorHint="#00000000"
+            android:orientation="vertical"
+            android:fadingEdge="none"
+            android:divider="@null" />
+
+    <!-- empty message -->
+    <LinearLayout
+            android:id="@android:id/empty"
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        <TextView
+                android:id="@+id/empty_message"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="32dp"
+                android:gravity="center"
+                android:text="@string/no_tweets_message"
+                android:textSize="18sp"/>
+
+    </LinearLayout>
+
+</LinearLayout>

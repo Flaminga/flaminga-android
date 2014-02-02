@@ -3,4 +3,8 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
-    </resources>
+    <dimen name="avatar_width_height_small">44dip</dimen>
+    <dimen name="avatar_width_height_medium">64dip</dimen>
+    <dimen name="avatar_width_height_large">78dip</dimen>
+
+</resources>
