@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.flaminga.client.Flaminga;
@@ -28,11 +30,18 @@ import twitter4j.TwitterFactory;
 import twitter4j.User;
 import twitter4j.auth.AccessToken;
 import twitter4j.conf.ConfigurationBuilder;
+import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
+import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout;
+import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
 
 /**
  * Created by mjanes on 2/1/14.
  */
-public class TimelineFragment extends ListFragment {
+public class TimelineFragment extends ListFragment implements OnRefreshListener {
+
+    private ListAdapter mListAdapter;
+    private PullToRefreshLayout mPullToRefreshLayout;
+
 
     /***********************************************************************************************
      * Constructors and factory methods
@@ -60,7 +69,21 @@ public class TimelineFragment extends ListFragment {
 
         View view = inflater.inflate(R.layout.fragment_timeline, parent, false);
 
-        initializeList(view);
+        // Now find the PullToRefreshLayout to setup
+        mPullToRefreshLayout = (PullToRefreshLayout) view.findViewById(R.id.ptr_layout);
+
+        // Now setup the PullToRefreshLayout
+        ActionBarPullToRefresh.from(getActivity())
+                // Mark All Children as pullable
+                .allChildrenArePullable()
+                        // Set the OnRefreshListener
+                .listener(this)
+                        // Finally commit the setup to our PullToRefreshLayout
+                .setup(mPullToRefreshLayout);
+
+        if (mListAdapter != null) {
+            getListView().setAdapter(mListAdapter);
+        }
 
         return view;
     }
@@ -70,13 +93,16 @@ public class TimelineFragment extends ListFragment {
      * Utility
      **********************************************************************************************/
 
-    public void initializeList(View view) {
 
+    @Override
+    public void onRefreshStarted(View view) {
+        // TODO: Check if refresh is already executing
+        new getTimeLine().execute();
     }
 
     /**
      * Function to get timeline
-     * */
+     */
     class getTimeLine extends AsyncTask<Void, Void, TweetArrayAdapter> {
 
         /**
@@ -113,7 +139,13 @@ public class TimelineFragment extends ListFragment {
         }
 
         protected void onPostExecute(TweetArrayAdapter adapter) {
-            getListView().setAdapter(adapter);
+            mListAdapter = adapter;
+            ListView listView = getListView();
+            if (listView != null) {
+                listView.setAdapter(adapter);
+            }
+
+            mPullToRefreshLayout.setRefreshComplete();
         }
 
     }
