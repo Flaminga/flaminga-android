@@ -1,3 +1,7 @@
+# Specific to Flaminga.
+# Ignore key file, so API keys are not published
+KeyContant.java
+
 # files for the dex VM
 *.dex
 
